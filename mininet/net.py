@@ -258,14 +258,17 @@ class Mininet( object ):
             cls = self.agent
         a = cls(name, **defaults)
         self.agents.append(a)
-        self.nameToNode[name] = a
+        self.nameToNode[ name ] = a
         return a
 
     # new-22.12
     def delAgent( self, agent ):
-        "Delete a agent"
+        "Delete an agent"
         self.delNode( agent, nodes=self.agents )
 
+    #new-10.1
+    # def isAgentNet(self, node):
+    #      return node in self.agents
 
     def addSwitch( self, name, cls=None, **params ):
         """Add switch.
@@ -361,14 +364,16 @@ class Mininet( object ):
         "del net[ name ] operator - delete node with given name"
         self.delNode( self.nameToNode[ key ] )
 
+    #new-1.1
     def __iter__( self ):
         "return iterator over node names"
-        for node in chain( self.hosts, self.switches, self.controllers ):
+        for node in chain( self.hosts, self.agents, self.switches, self.controllers ):
             yield node.name
 
+    # new-1.1
     def __len__( self ):
         "returns number of nodes in net"
-        return ( len( self.hosts ) + len( self.switches ) +
+        return ( len( self.hosts ) + len( self.agents ) + len( self.switches ) +
                  len( self.controllers ) )
 
     def __contains__( self, item ):
@@ -596,7 +601,16 @@ class Mininet( object ):
         info( '*** Starting %s switches\n' % len( self.switches ) )
         for switch in self.switches:
             info( switch.name + ' ')
-            switch.start( self.controllers )
+            #new-11.1
+            for agent in self.agents:
+               if self.linksBetween(agent,switch):
+                    a = agent
+                    self.delLinkBetween(agent,switch)
+            self.controllers.append(a)
+            #endnew-11.1
+            switch.start( self.controllers)
+            #new-11.1
+            self.controllers.remove(a)
         started = {}
         for swclass, switches in groupby(
                 sorted( self.switches, key=type ), type ):
@@ -684,6 +698,7 @@ class Mininet( object ):
 
     # XXX These test methods should be moved out of this class.
     # Probably we should create a tests.py for them
+
 
     @staticmethod
     def _parsePing( pingOutput ):
@@ -829,6 +844,7 @@ class Mininet( object ):
            returns: ploss packet loss percentage"""
         hosts = [ self.hosts[ 0 ], self.hosts[ 1 ] ]
         return self.pingFull( hosts=hosts )
+
 
     @staticmethod
     def _parseIperf( iperfOutput ):

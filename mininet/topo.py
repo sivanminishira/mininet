@@ -155,6 +155,9 @@ class Topo( object ):
         result = self.addNode( name, isSwitch=True, **opts )
         return result
 
+    def attach(self, node1, node2):
+        self.addLink(node1, node2)
+
     def addLink( self, node1, node2, port1=None, port2=None,
                  key=None, **opts ):
         """node1, node2: nodes to link together
@@ -182,7 +185,7 @@ class Topo( object ):
 
     # new-22.12
     def isAgent( self, n ):
-        "Returns true if node is a switch."
+        "Returns true if node is an agent."
         return self.g.node[ n ].get( 'isAgent', False )
 
     def switches( self, sort=True ):
@@ -335,7 +338,7 @@ class SingleSwitchAndAgentTopo( Topo ):
             host = self.addHost( 'h%s' % h )
             self.addLink( host, switch )
         agent = self.addAgent ('a1')
-        self.addLink( agent, switch)
+        self.attach( agent, switch)
 
 
 class SingleSwitchReversedTopo( Topo ):
@@ -353,11 +356,13 @@ class SingleSwitchReversedTopo( Topo ):
             self.addLink( host, switch,
                           port1=0, port2=( k - h + 1 ) )
 
+
 #new-22.12
 class AgentTopo( SingleSwitchAndAgentTopo ):
     "Agent topology with two hosts, one agent and one switch"
     def build( self ):
         return SingleSwitchAndAgentTopo.build( self, k=2 )
+
 
 class MinimalTopo( SingleSwitchTopo ):
     "Minimal topology with two hosts and one switch"

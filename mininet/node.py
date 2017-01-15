@@ -838,9 +838,24 @@ class CPULimitedHost( Host ):
 
 # new-18.12
 class Agent(Node):
-    def __init__(self, name, **params):
+    #new-11.1
+    port = 6635
+
+    def __init__(self, name, ip="127.0.0.1", protocol='tcp', **params):
         print("agent")
         Node.__init__(self, name, **params)
+        self.port = Agent.port
+        Agent.port += 1
+        self.ip = ip
+        self.protocol = protocol
+
+    def IP( self, intf=None ):
+        "Return IP address of the Controller"
+        if self.intfs:
+            ip = Node.IP( self, intf )
+        else:
+            ip = self.ip
+        return ip
 
 
 # Some important things to note:
@@ -915,7 +930,7 @@ class Switch( Node ):
             error( '*** Error: %s has execed and cannot accept commands' %
                    self.name )
 
-    def connected( self ): #todo connect switch to agent? trough here or by link topo?i think this only checks we are connected to a controller
+    def connected( self ):
         "Is the switch connected to a controller? (override this method)"
         # Assume that we are connected by default to whatever we need to
         # be connected to. This should be overridden by any OpenFlow
@@ -1168,7 +1183,8 @@ class OVSSwitch( Switch ):
             opts += ' stp_enable=true'
         return opts
 
-    def start( self, controllers ):
+    #new-11.1
+    def start( self, controllers):
         "Start up a new OVS OpenFlow switch using ovs-vsctl"
         if self.inNamespace:
             raise Exception(
@@ -1183,6 +1199,10 @@ class OVSSwitch( Switch ):
         clist = [ ( self.name + c.name, '%s:%s:%d' %
                   ( c.protocol, c.IP(), c.port ) )
                   for c in controllers ]
+        # new-11.1
+        # alist = [( self.name + a.name, '%s:%s:%d' %
+        #           ( a.protocol, a.IP(), a.port ) )
+        #           for a in agents]
         if self.listenPort:
             clist.append( ( self.name + '-listen',
                             'ptcp:%s' % self.listenPort ) )
@@ -1277,9 +1297,10 @@ class OVSBridge( OVSSwitch ):
         kwargs.update( failMode='standalone' )
         OVSSwitch.__init__( self, *args, **kwargs )
 
-    def start( self, controllers ):
+    # new-11.1
+    def start( self, controllers):
         "Start bridge, ignoring controllers argument"
-        OVSSwitch.start( self, controllers=[] )
+        OVSSwitch.start( self, controllers)
 
     def connected( self ):
         "Are we forwarding yet?"

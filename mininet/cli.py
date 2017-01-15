@@ -150,6 +150,25 @@ class CLI( Cmd ):
         nodes = ' '.join( sorted( self.mn ) )
         output( 'available nodes are: \n%s\n' % nodes )
 
+    # new-1.1
+    # def do_attach(self, line):
+    #     "Attach agent to switch."
+    #     arg_list = line.split(' ')
+    #     try:
+    #         ag = self.mn.get(arg_list[0])
+    #     except Exception as e:
+    #         output('Unknown agent: ' + str(e) + '\n')
+    #     try:
+    #         sw = self.mn.get(arg_list[1])
+    #     except Exception as e:
+    #         output('Unknown switch: ' + str(e) + '\n')
+    #     print(ag)
+    #     print(sw)
+    #     self.mn.delLinkBetween(sw, ag)
+    #     lport = self.mn.listenPort
+    #     self.mn.addLink(sw, ag, lport)
+
+
     def do_ports( self, _line ):
         "display ports and interfaces for each switch"
         dumpPorts( self.mn.switches )
