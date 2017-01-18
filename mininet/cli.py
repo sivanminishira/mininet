@@ -168,6 +168,15 @@ class CLI( Cmd ):
     #     lport = self.mn.listenPort
     #     self.mn.addLink(sw, ag, lport)
 
+    #new-16.1
+    # def do_print(self, line):
+    #     arg_list = line.split(' ')
+    #     try:
+    #         ag = self.mn.get(arg_list[0])
+    #     except Exception as e:
+    #         output('Unknown agent: ' + str(e) + '\n')
+    #     ag.file.write("shira")
+    #     print ag.file.readlines()
 
     def do_ports( self, _line ):
         "display ports and interfaces for each switch"

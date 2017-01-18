@@ -474,6 +474,8 @@ class Mininet( object ):
         "Configure a set of agents."
         for agent in self.agents:
             info( agent.name + ' ' )
+            # new-16.1
+            agent.start()
             intf = agent.defaultIntf()
             if intf:
                 agent.configDefault()

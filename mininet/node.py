@@ -841,13 +841,17 @@ class Agent(Node):
     #new-11.1
     port = 6635
 
-    def __init__(self, name, ip="127.0.0.1", protocol='tcp', **params):
+    def __init__(self, name, ip="127.0.0.1", protocol='tcp', command='ryu-manager'
+                 , cargs='-v ptcp:%d', cdir=None, **params):
         print("agent")
-        Node.__init__(self, name, **params)
+        Node.__init__(self, name, False, **params)
         self.port = Agent.port
         Agent.port += 1
         self.ip = ip
         self.protocol = protocol
+        self.command = command
+        self.cargs = cargs
+        self.cdir = cdir
 
     def IP( self, intf=None ):
         "Return IP address of the Controller"
@@ -857,6 +861,47 @@ class Agent(Node):
             ip = self.ip
         return ip
 
+    # new-16.1
+    def start(self):
+        """Start <controller> <args> on controller.
+           Log to /tmp/cN.log"""
+        pathCheck(self.command)
+        cout = '/tmp/' + self.name + '.log'
+        if self.cdir is not None:
+            self.cmd('cd ' + self.cdir)
+        self.cmd(self.command + ' ' + self.cargs % self.port +
+                 ' 1>' + cout + ' 2>' + cout + ' &')
+        self.execed = False
+
+
+# new-16.1
+class SecAgent(Agent):
+
+    def __init__(self, name, *ryuArgs, **kwargs):
+        """Init.
+        name: name to give controller.
+        ryuArgs: arguments and modules to pass to Ryu"""
+        homeDir = quietRun('printenv HOME').strip('\r\n')
+        ryuCoreDir = '%s/ryu/ryu/app/' % homeDir
+        if not ryuArgs:
+            warn('warning: no Ryu modules specified; '
+                 'running simple_switch only\n')
+            # new-16.01
+            ryuArgs = [ryuCoreDir + 'SecMonitor.py']
+        elif type(ryuArgs) not in (list, tuple):
+            ryuArgs = [ryuArgs]
+        Agent.__init__(self, name, command='ryu-manager --verbose',
+                        cargs='--ofp-tcp-listen-port %s ' +
+                              ' '.join(ryuArgs),
+                        cdir=ryuCoreDir,
+                        **kwargs)
+
+        # controller.__init__(self, name,
+        #                 command='ryu-manager',
+        #                 cargs='--ofp-tcp-listen-port %s ' +
+        #                       ' '.join(ryuArgs),
+        #                 cdir=ryuCoreDir,
+        #                 **kwargs)
 
 # Some important things to note:
 #
@@ -1506,7 +1551,8 @@ class Ryu( Controller ):
         if not ryuArgs:
             warn( 'warning: no Ryu modules specified; '
                   'running simple_switch only\n' )
-            ryuArgs = [ ryuCoreDir + 'simple_switch.py' ]
+            #new-16.01
+            ryuArgs = [ ryuCoreDir + 'simple_switch_13.py' ]
         elif type( ryuArgs ) not in ( list, tuple ):
             ryuArgs = [ ryuArgs ]
 

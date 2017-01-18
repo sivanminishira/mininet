@@ -25,7 +25,7 @@ from mininet.cli import CLI as CLI
 from mininet.log import lg, LEVELS, info, debug, warn, error, output
 from mininet.net import Mininet, MininetWithControlNet, VERSION
 # new-22.12
-from mininet.node import ( Host, Agent, CPULimitedHost, Controller, OVSController,
+from mininet.node import ( Host, Agent,SecAgent, CPULimitedHost, Controller, OVSController,
                            Ryu, NOX, RemoteController, findController,
                            DefaultController, NullController,
                            UserSwitch, OVSSwitch, OVSBridge,
@@ -78,7 +78,8 @@ HOSTS = { 'proc': Host,
 
 # new-22.12
 AGENTDEF = 'default'
-AGENTS = { 'default': Agent}
+AGENTS = { 'default': SecAgent,
+           'SecAgent': SecAgent}
 
 CONTROLLERDEF = 'default'
 CONTROLLERS = { 'ref': Controller,
