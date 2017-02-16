@@ -470,25 +470,25 @@ class Mininet( object ):
         info( '\n' )
 
     # new-22.12
-    def configAgents( self ):
-        "Configure a set of agents."
-        for agent in self.agents:
-            info( agent.name + ' ' )
-            # new-16.1
-            agent.start()
-            intf = agent.defaultIntf()
-            if intf:
-                agent.configDefault()
-            else:
-                # Don't configure nonexistent intf
-                agent.configDefault( ip=None, mac=None )
-            # You're low priority, dude!
-            # BL: do we want to do this here or not?
-            # May not make sense if we have CPU lmiting...
-            # quietRun( 'renice +18 -p ' + repr( host.pid ) )
-            # This may not be the right place to do this, but
-            # it needs to be done somewhere.
-        info( '\n' )
+    # def configAgents( self ):
+    #     "Configure a set of agents."
+    #     for agent in self.agents:
+    #         info( agent.name + ' ' )
+    #         # new-16.1
+    #         agent.start()
+    #         intf = agent.defaultIntf()
+    #         if intf:
+    #             agent.configDefault()
+    #         else:
+    #             # Don't configure nonexistent intf
+    #             agent.configDefault( ip=None, mac=None )
+    #         # You're low priority, dude!
+    #         # BL: do we want to do this here or not?
+    #         # May not make sense if we have CPU lmiting...
+    #         # quietRun( 'renice +18 -p ' + repr( host.pid ) )
+    #         # This may not be the right place to do this, but
+    #         # it needs to be done somewhere.
+    #     info( '\n' )
 
     def buildFromTopo( self, topo=None ):
         """Build mininet from a topology object
@@ -557,10 +557,10 @@ class Mininet( object ):
             self.configureControlNetwork()
         info( '*** Configuring hosts\n' )
         self.configHosts()
-        #new-22.12
-        info('*** Configuring agents\n')
-        self.configAgents()
-        #end-new
+        # #new-22.12
+        # info('*** Configuring agents\n')
+        # self.configAgents()
+        # #end-new
         if self.xterms:
             self.startTerms()
         if self.autoStaticArp:
@@ -577,6 +577,7 @@ class Mininet( object ):
         self.terms += makeTerms( self.controllers, 'controller' )
         self.terms += makeTerms( self.switches, 'switch' )
         self.terms += makeTerms( self.hosts, 'host' )
+        self.terms += makeTerms(self.agents, 'agent')
 
     def stopXterms( self ):
         "Kill each xterm."
@@ -600,6 +601,18 @@ class Mininet( object ):
             info( controller.name + ' ')
             controller.start()
         info( '\n' )
+        #new-11.1
+        info('*** Starting agents\n')
+        for agent in self.agents:
+            info(agent.name + ' ')
+            agent.start()
+            intf = agent.defaultIntf()
+            if intf:
+                agent.configDefault()
+            else:
+                agent.configDefault(ip=None, mac=None)
+        info('\n')
+        #endnew-11.1
         info( '*** Starting %s switches\n' % len( self.switches ) )
         for switch in self.switches:
             info( switch.name + ' ')
@@ -657,7 +670,7 @@ class Mininet( object ):
         info('*** Stopping %i agents\n' % len(self.agents))
         for agent in self.agents:
             info(agent.name + ' ')
-            agent.terminate()
+            agent.stop()
         # end-new
         info('\n')
         info( '*** Stopping %i hosts\n' % len( self.hosts ) )

@@ -34,7 +34,7 @@ from mininet.nodelib import LinuxBridge
 from mininet.link import Link, TCLink, TCULink, OVSLink
 #new-22.12
 from mininet.topo import ( SingleSwitchTopo, LinearTopo,
-                           SingleSwitchReversedTopo, MinimalTopo, AgentTopo )
+                           SingleSwitchReversedTopo, MinimalTopo, AgentTopo, SingleSwitchAndAgentTopo)
 from mininet.topolib import TreeTopo, TorusTopo
 from mininet.util import customClass, specialClass, splitArgs
 from mininet.util import buildTopo
@@ -58,6 +58,7 @@ TOPOS = { 'agent' : AgentTopo,
           'linear': LinearTopo,
           'reversed': SingleSwitchReversedTopo,
           'single': SingleSwitchTopo,
+          'single agent' : SingleSwitchAndAgentTopo,
           'tree': TreeTopo,
           'torus': TorusTopo }
 
@@ -350,8 +351,6 @@ class MininetRunner( object ):
                     raise Exception( "Could not find a default controller "
                                      "for switch %s" %
                                      opts.switch )
-
-
 
         topo = buildTopo( TOPOS, opts.topo )
         switch = customClass( SWITCHES, opts.switch )

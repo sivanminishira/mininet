@@ -863,7 +863,7 @@ class Agent(Node):
 
     # new-16.1
     def start(self):
-        """Start <controller> <args> on controller.
+        """Start <Agent> <args> on agent.
            Log to /tmp/cN.log"""
         pathCheck(self.command)
         cout = '/tmp/' + self.name + '.log'
@@ -872,6 +872,12 @@ class Agent(Node):
         self.cmd(self.command + ' ' + self.cargs % self.port +
                  ' 1>' + cout + ' 2>' + cout + ' &')
         self.execed = False
+
+    def stop( self, *args, **kwargs ):
+        "Stop agent."
+        self.cmd( 'kill %' + self.command )
+        self.cmd( 'wait %' + self.command )
+        super( Controller, self ).stop( *args, **kwargs )
 
 
 # new-16.1
@@ -884,8 +890,6 @@ class SecAgent(Agent):
         homeDir = quietRun('printenv HOME').strip('\r\n')
         ryuCoreDir = '%s/ryu/ryu/app/' % homeDir
         if not ryuArgs:
-            warn('warning: no Ryu modules specified; '
-                 'running simple_switch only\n')
             # new-16.01
             ryuArgs = [ryuCoreDir + 'SecMonitor.py']
         elif type(ryuArgs) not in (list, tuple):
@@ -1550,9 +1554,9 @@ class Ryu( Controller ):
         ryuCoreDir = '%s/ryu/ryu/app/' % homeDir
         if not ryuArgs:
             warn( 'warning: no Ryu modules specified; '
-                  'running simple_switch only\n' )
+                  'running simple_switch_with_agent_support only\n' )
             #new-16.01
-            ryuArgs = [ ryuCoreDir + 'simple_switch_13.py' ]
+            ryuArgs = [ ryuCoreDir + 'simple_switch_13_agent_support.py' ]
         elif type( ryuArgs ) not in ( list, tuple ):
             ryuArgs = [ ryuArgs ]
 
