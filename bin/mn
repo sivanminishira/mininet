@@ -25,7 +25,7 @@ from mininet.cli import CLI as CLI
 from mininet.log import lg, LEVELS, info, debug, warn, error, output
 from mininet.net import Mininet, MininetWithControlNet, VERSION
 # new-22.12
-from mininet.node import ( Host, Agent,SecAgent, CPULimitedHost, Controller, OVSController,
+from mininet.node import ( Host, SecAgent, SamplingAgent, CPULimitedHost, Controller, OVSController,
                            Ryu, NOX, RemoteController, findController,
                            DefaultController, NullController,
                            UserSwitch, OVSSwitch, OVSBridge,
@@ -34,7 +34,7 @@ from mininet.nodelib import LinuxBridge
 from mininet.link import Link, TCLink, TCULink, OVSLink
 #new-22.12
 from mininet.topo import ( SingleSwitchTopo, LinearTopo,
-                           SingleSwitchReversedTopo, MinimalTopo, AgentTopo, SingleSwitchAndAgentTopo)
+                           SingleSwitchReversedTopo, MinimalTopo, AgentTopo1, AgentTopo2, SingleSwitchAndAgentTopo)
 from mininet.topolib import TreeTopo, TorusTopo
 from mininet.util import customClass, specialClass, splitArgs
 from mininet.util import buildTopo
@@ -52,8 +52,9 @@ PLACEMENT = { 'block': SwitchBinPlacer, 'random': RandomPlacer }
 
 # built in topologies, created only when run
 #new-22.12
-TOPODEF = 'agent'
-TOPOS = { 'agent' : AgentTopo,
+TOPODEF = 'agent2'
+TOPOS = { 'agent1': AgentTopo1,
+          'agent2': AgentTopo2,
           'minimal': MinimalTopo,
           'linear': LinearTopo,
           'reversed': SingleSwitchReversedTopo,
@@ -78,9 +79,9 @@ HOSTS = { 'proc': Host,
           'cfs': specialClass( CPULimitedHost, defaults=dict( sched='cfs' ) ) }
 
 # new-22.12
-AGENTDEF = 'default'
-AGENTS = { 'default': SecAgent,
-           'SecAgent': SecAgent}
+AGENTDEF = 'SecAgent'
+AGENTS = { 'SecAgent': SecAgent,
+           'SamplingAgent': SamplingAgent}
 
 CONTROLLERDEF = 'default'
 CONTROLLERS = { 'ref': Controller,

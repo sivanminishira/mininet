@@ -326,8 +326,6 @@ class SingleSwitchTopo( Topo ):
             host = self.addHost( 'h%s' % h )
             self.addLink( host, switch )
 
-# new-22.12
-
 
 class SingleSwitchAndAgentTopo( Topo ):
     "Single switch connected to k hosts."
@@ -341,6 +339,26 @@ class SingleSwitchAndAgentTopo( Topo ):
             self.addLink( host, switch )
         agent = self.addAgent ('a1')
         self.attach( agent, switch)
+
+
+class TwoSwitchAndAgentTopo( Topo ):
+    "Single switch connected to k hosts."
+
+    def build( self, k=2, **_opts ):
+        "k: number of hosts"
+        self.k = k
+        switch1 = self.addSwitch( 's1' )
+        switch2 = self.addSwitch('s2')
+        self.addLink(switch1, switch2)
+        for h in irange( 1, k ):
+            host = self.addHost( 'h%s' % h )
+            self.addLink( host, switch1 )
+        host = self.addHost('h3')
+        self.addLink(host, switch2)
+        agent1 = self.addAgent ('a1')
+        self.attach( agent1, switch1)
+        agent2 = self.addAgent('a2')
+        self.attach(agent2, switch2)
 
 
 class SingleSwitchReversedTopo( Topo ):
@@ -360,10 +378,16 @@ class SingleSwitchReversedTopo( Topo ):
 
 
 #new-22.12
-class AgentTopo( SingleSwitchAndAgentTopo ):
+class AgentTopo1( SingleSwitchAndAgentTopo ):
     "Agent topology with two hosts, one agent and one switch"
     def build( self ):
         return SingleSwitchAndAgentTopo.build( self, k=2 )
+
+
+class AgentTopo2( TwoSwitchAndAgentTopo ):
+    "Agent topology with two hosts, one agent and one switch"
+    def build( self ):
+        return TwoSwitchAndAgentTopo.build( self, k=2 )
 
 
 class MinimalTopo( SingleSwitchTopo ):

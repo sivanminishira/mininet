@@ -266,10 +266,6 @@ class Mininet( object ):
         "Delete an agent"
         self.delNode( agent, nodes=self.agents )
 
-    #new-10.1
-    # def isAgentNet(self, node):
-    #      return node in self.agents
-
     def addSwitch( self, name, cls=None, **params ):
         """Add switch.
            name: name of switch to add
@@ -539,8 +535,11 @@ class Mininet( object ):
         info( '\n*** Adding links:\n' )
         for srcName, dstName, params in topo.links(
                 sort=True, withInfo=True ):
-            self.addLink( **params )
-            info( '(%s, %s) ' % ( srcName, dstName ) )
+            if topo.isAgent(srcName) and topo.isSwitch(dstName):
+                self.getNodeByName(dstName).agents.append(self.getNodeByName(srcName))
+            else:
+                self.addLink( **params )
+                info( '(%s, %s) ' % ( srcName, dstName ) )
 
         info( '\n' )
 
@@ -601,31 +600,19 @@ class Mininet( object ):
             info( controller.name + ' ')
             controller.start()
         info( '\n' )
-        #new-11.1
         info('*** Starting agents\n')
         for agent in self.agents:
             info(agent.name + ' ')
             agent.start()
-            intf = agent.defaultIntf()
-            if intf:
-                agent.configDefault()
-            else:
-                agent.configDefault(ip=None, mac=None)
         info('\n')
-        #endnew-11.1
         info( '*** Starting %s switches\n' % len( self.switches ) )
         for switch in self.switches:
             info( switch.name + ' ')
-            #new-11.1
-            for agent in self.agents:
-               if self.linksBetween(agent,switch):
-                    a = agent
-                    self.delLinkBetween(agent,switch)
-            self.controllers.append(a)
-            #endnew-11.1
-            switch.start( self.controllers)
-            #new-11.1
-            self.controllers.remove(a)
+            for agent in switch.agents:
+                self.controllers.append(agent)
+            switch.start(self.controllers)
+            for agent in switch.agents:
+                self.controllers.remove(agent)
         started = {}
         for swclass, switches in groupby(
                 sorted( self.switches, key=type ), type ):
@@ -666,12 +653,10 @@ class Mininet( object ):
                 switch.stop()
             switch.terminate()
         info( '\n' )
-        # new-22.12
         info('*** Stopping %i agents\n' % len(self.agents))
         for agent in self.agents:
             info(agent.name + ' ')
             agent.stop()
-        # end-new
         info('\n')
         info( '*** Stopping %i hosts\n' % len( self.hosts ) )
         for host in self.hosts:

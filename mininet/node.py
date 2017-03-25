@@ -105,6 +105,7 @@ class Node( object ):
         # Start command interpreter shell
         self.startShell()
         self.mountPrivateDirs()
+        self.agents = []
 
     # File descriptor to node mapping support
     # Class variables and methods
@@ -836,14 +837,12 @@ class CPULimitedHost( Host ):
         mountCgroups()
         cls.inited = True
 
-# new-18.12
+
 class Agent(Node):
-    #new-11.1
     port = 6635
 
     def __init__(self, name, ip="127.0.0.1", protocol='tcp', command='ryu-manager'
                  , cargs='-v ptcp:%d', cdir=None, **params):
-        print("agent")
         Node.__init__(self, name, False, **params)
         self.port = Agent.port
         Agent.port += 1
@@ -854,14 +853,12 @@ class Agent(Node):
         self.cdir = cdir
 
     def IP( self, intf=None ):
-        "Return IP address of the Controller"
         if self.intfs:
             ip = Node.IP( self, intf )
         else:
             ip = self.ip
         return ip
 
-    # new-16.1
     def start(self):
         """Start <Agent> <args> on agent.
            Log to /tmp/cN.log"""
@@ -881,9 +878,8 @@ class Agent(Node):
 
 
 # new-16.1
-class SecAgent(Agent):
-
-    def __init__(self, name, *ryuArgs, **kwargs):
+class OpenFlowAgent(Agent):
+    def __init__(self, name, ourApp, *ryuArgs, **kwargs):
         """Init.
         name: name to give controller.
         ryuArgs: arguments and modules to pass to Ryu"""
@@ -891,7 +887,7 @@ class SecAgent(Agent):
         ryuCoreDir = '%s/ryu/ryu/app/' % homeDir
         if not ryuArgs:
             # new-16.01
-            ryuArgs = [ryuCoreDir + 'SecMonitor.py']
+            ryuArgs = [ryuCoreDir + ourApp]
         elif type(ryuArgs) not in (list, tuple):
             ryuArgs = [ryuArgs]
         Agent.__init__(self, name, command='ryu-manager --verbose',
@@ -900,12 +896,15 @@ class SecAgent(Agent):
                         cdir=ryuCoreDir,
                         **kwargs)
 
-        # controller.__init__(self, name,
-        #                 command='ryu-manager',
-        #                 cargs='--ofp-tcp-listen-port %s ' +
-        #                       ' '.join(ryuArgs),
-        #                 cdir=ryuCoreDir,
-        #                 **kwargs)
+
+class SecAgent(OpenFlowAgent):
+    def __init__(self, name, *ryuArgs, **kwargs):
+        OpenFlowAgent.__init__(self, name, 'SecMonitor.py', *ryuArgs, **kwargs)
+
+
+class SamplingAgent(OpenFlowAgent):
+    def __init__(self, name, *ryuArgs, **kwargs):
+        OpenFlowAgent.__init__(self, name, 'SamplingMonitor.py', *ryuArgs, **kwargs)
 
 # Some important things to note:
 #
