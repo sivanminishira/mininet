@@ -1,7 +1,7 @@
 Mininet AGENT: A Node That Enables Monitoring The Switch 
 ========================================================
 
-*This project was done as part of our B.Sc studies @ the Technion – Israel Institute of Technology*
+*This project was done as part of our B.Sc studies at the Technion – Israel Institute of Technology*
 
 Agent 1.0
 
@@ -30,9 +30,8 @@ Now if you know how to use mininet the rest is the just the same as using any ot
 ### On a personal note
 
 We hope our feature will help you and that you will create more use cases that are sutable for you and share them with others so we can expand the AGENT toolbox for all of mininet's community.
-If you have any questions are contact is:
-sivanoddes@gmail.com
-shiralevi51@gmail.com
+
+If you have any questions feel free to write us: sivanoddes@gmail.com, shiralevi51@gmail.com
 
 
 ### Documentation
@@ -44,4 +43,5 @@ shiralevi51@gmail.com
 
 
 Shira Levy & Sivan Oddes 
+
 Guided by: Jalil Morany & Itzik Ashkenazi 
