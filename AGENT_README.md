@@ -11,7 +11,7 @@ Agent is a subclass node that shares the same network namespace as
 the switch and the controller. Since it is a subclass to the node it
 can also connect by link to any other component in the network.
 
-### How does it work? Ryu maneger application?
+### How does it work? 
 
 Agents supply the basic infrastructure for creating user defined monitoring 
 applications in the network. 
@@ -24,7 +24,7 @@ applications in the network.
 
 * __Added two new topologies__: __SingleSwitchAndAgentTopo__(topo) & __TwoSwitchAndAgentTopo__(topo).
 
-Now if you know how to use mininet the rest is the just the same as using any other component in the network. You'll just need to change the Ryu defulte module- simple_switch to simple_switch_with_agent_support (file attached in Documentation) and run mininet with the above topologies or creat your own!
+Now if you know how to use mininet the rest is the just the same as using any other component in the network. You'll just need to change the Ryu default module- simple_switch to simple_switch_with_agent_support (file attached in Documentation) and run mininet with the above topologies or creat your own!
 
 
 ### On a personal note
@@ -37,10 +37,10 @@ shiralevi51@gmail.com
 
 ### Documentation
 
-final presentation.pptx
-sampelingAgent.avi
-presentation.avi
-Ryu modules: simple_switch_with_agent_
+* final presentation.pptx
+* sampelingAgent.avi
+* presentation.avi
+* Ryu modules: simple_switch_with_agent_
 
 
 Shira Levy & Sivan Oddes 
