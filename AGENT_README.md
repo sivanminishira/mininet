@@ -11,14 +11,17 @@ Agent is a subclass node that shares the same network namespace as
 the switch and the controller. Since it is a subclass to the node it
 can also connect by link to any other component in the network.
 
+### How does it work? Ryu maneger application?
+
 Agents supply the basic infrastructure for creating user defined monitoring 
-applications in the network. The first subclass Agent we added is an OpenFlow
+applications in the network. 
+
+* The first subclass Agent we added is an OpenFlow
 based Agent that connects to the OpenFlow switch, called – OpenFlowAgent. 
 The first two use-cases that give an example on what an Agent can be used for are:
 •	SamplingAgent - samples every N packet that arrives to the switch.
 •	SecAgent - samples every packet that arrives to the switch after N seconds.
 
-### How does it work? Ryu maneger application?
 * (Choose) Two new topologies: SingleSwitchAndAgentTopo(topo), TwoSwitchAndAgentTopo(topo).
 
 ### Features Added to Mininet
@@ -28,8 +31,9 @@ The first two use-cases that give an example on what an Agent can be used for ar
 
 ### Documentation
 
-ppt
-doc?
+final presentation.pptx
+sampelingAgent.avi
+presentation.avi
 
 
 Shira Levy & Sivan Oddes 
