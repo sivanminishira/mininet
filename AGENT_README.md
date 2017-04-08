@@ -7,7 +7,7 @@ Agent 1.0
 
 ### What is An Agent?
 
-Agents is a subclass node that shares the same network namespace as the switch and the controller. Since it is a subclass to the node it
+AGENT is a subclass node that shares the same network namespace as the switch and the controller. Since it is a subclass to the node it
 can also connect by link to any other component in the network.
 
 ### How does it work? 
