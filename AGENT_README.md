@@ -38,11 +38,8 @@ If you have any questions feel free to write us: sivanoddes@gmail.com, shiralevi
 * sampelingAgent.avi (N=5)
 * secAgent.avi (N=5) 
 * cli_example.avi
-* Ryu modules: (the modules are under util/apps)
-  -simple_switch_with_agent_support.py
-  -SecMonitor.py
-  -SamplingMonitor.py
- 
+* Ryu modules: simple_switch_with_agent_support.py, SecMonitor.py, SamplingMonitor.py
+ (the modules are under util/apps) 
 
 
 Shira Levy & Sivan Oddes 
